@@ -1,4 +1,5 @@
 from pathlib import Path
+
 moves = Path("data.txt").read_text().splitlines()
 print(len(moves))
 depth = horizontal = 0
@@ -13,4 +14,3 @@ for m in moves:
     elif move == "up":
         depth -= step
 print(depth, horizontal, horizontal * depth)
-
