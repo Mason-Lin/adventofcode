@@ -1,10 +1,9 @@
-import math
 import re
 from collections import Counter
 from pathlib import Path
 
 filename = "sample.txt"
-# filename = "data.txt"
+filename = "data.txt"
 data = Path(__file__).parent.joinpath(filename).read_text().splitlines()
 
 
@@ -48,23 +47,21 @@ class Vent:
                 path.append(p)
             return path
         if self.is_diagonal():
+            dx, dy = self.end.x - self.begin.x, self.end.y - self.begin.y
+            m = -1 if dx * dy < 0 else 1
+            point_with_low_x, point_with_high_x = sorted([self.begin, self.end], key=lambda p: p.x)
+            start = point_with_low_x
+            end = point_with_high_x
+            current = Point(start.x, start.y)
             path = []
-            begin_hypot = math.hypot(self.begin.x, self.begin.y)
-            end_hypot = math.hypot(self.end.x, self.end.y)
-            if begin_hypot < end_hypot:
-                bigger = "end"
-            else:
-                bigger = "begin"
-
-            if self.begin.x > 0 and self.begin.y > 0:
-                quadrant = "1"
-            if self.begin.x < 0 and self.begin.y > 0:
-                quadrant = "2"
-            # quadrant 1
-            # quadrant 2
-            # quadrant 3
-            # quadrant 4
-            return []
+            path.append(current)
+            while current != end:
+                current = Point(current.x + 1, current.y + m)
+                path.append(current)
+            # print("Point", self.begin, self.end)
+            # print(f"from {point_with_low_x} to {point_with_high_x}")
+            # print(path)
+            return path
 
     def is_considered(self):
         assert not (self.is_vertical() and self.is_horizontal()), "same point??"
@@ -101,7 +98,6 @@ records = Counter()
 for v in vents:
     for p in v.path:
         records.update([p])
-
 
 overlap_record = [point for point, count in records.items() if count > 1]
 print(len(overlap_record))
