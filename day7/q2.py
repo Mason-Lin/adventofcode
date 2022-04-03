@@ -6,7 +6,7 @@ from pathlib import Path
 
 # FILENAME = "sample.txt"
 FILENAME = "data.txt"
-data = Path(__file__).parent.joinpath(FILENAME).read_text()
+data = Path(__file__).parent.joinpath(FILENAME).read_text(encoding='utf-8')
 
 positions = list(map(int, data.split(",")))
 print(f"Initial state: {positions}")
