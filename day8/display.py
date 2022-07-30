@@ -11,6 +11,18 @@ class SevenSegmentDisplay:
         self.bm: str = bm
         self.bl: str = bl
         self.br: str = br
+        self.MAP = {
+            0: "".join(sorted(f"{self.tm}{self.tl}{self.tr}{self.bm}{self.bl}{self.br}")),
+            1: "".join(sorted(f"{self.tr}{self.br}")),
+            2: "".join(sorted(f"{self.tm}{self.tr}{self.mm}{self.bm}{self.bl}")),
+            3: "".join(sorted(f"{self.tm}{self.tr}{self.mm}{self.bm}{self.br}")),
+            4: "".join(sorted(f"{self.tl}{self.tr}{self.mm}{self.br}")),
+            5: "".join(sorted(f"{self.tm}{self.tl}{self.mm}{self.bm}{self.br}")),
+            6: "".join(sorted(f"{self.tm}{self.tl}{self.mm}{self.bm}{self.bl}{self.br}")),
+            7: "".join(sorted(f"{self.tm}{self.tr}{self.br}")),
+            8: "".join(sorted(f"{self.tm}{self.tl}{self.tr}{self.mm}{self.bm}{self.bl}{self.br}")),
+            9: "".join(sorted(f"{self.tm}{self.tl}{self.tr}{self.mm}{self.bm}{self.br}")),
+        }
 
     def __repr__(self):
         new_str = []
@@ -32,20 +44,15 @@ class SevenSegmentDisplay:
         ]
         return positions
 
-    def get_number(self, num):
+    def get_pattern_by_number(self, num):
         assert 0 <= num <= 9
-        return {
-            0: sorted(f"{self.tm}{self.tl}{self.tr}{self.bm}{self.bl}{self.br}"),
-            1: sorted(f"{self.tr}{self.br}"),
-            2: sorted(f"{self.tm}{self.tr}{self.mm}{self.bm}{self.bl}"),
-            3: sorted(f"{self.tm}{self.tr}{self.mm}{self.bm}{self.br}"),
-            4: sorted(f"{self.tl}{self.tr}{self.mm}{self.br}"),
-            5: sorted(f"{self.tm}{self.tl}{self.mm}{self.bm}{self.br}"),
-            6: sorted(f"{self.tm}{self.tl}{self.mm}{self.bm}{self.bl}{self.br}"),
-            7: sorted(f"{self.tr}{self.br}"),
-            8: sorted(f"{self.tm}{self.tl}{self.tr}{self.mm}{self.bm}{self.bl}{self.br}"),
-            9: sorted(f"{self.tm}{self.tl}{self.tr}{self.mm}{self.bm}{self.br}"),
-        }[num]
+        return self.MAP[num]
+
+    def get_number_by_pattern(self, pattern):
+        for num, key in self.MAP.items():
+            if pattern == key:
+                return num
+        raise ValueError(f"{pattern} is not a valid pattern")
 
 
 @lru_cache

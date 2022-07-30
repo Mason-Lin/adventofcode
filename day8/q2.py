@@ -11,6 +11,7 @@ class Try:
         self.inputs = ["".join(sorted(i)) for i in inputs.strip().split(" ")]
         self.outputs = ["".join(sorted(i)) for i in outputs.strip().split(" ")]
         self.combinations = list(set(self.inputs + self.outputs))
+        self.mapping = {}
 
     def get_try_with_specific_length(self, length):
         return [c for c in self.combinations if len(c) == length]
@@ -66,12 +67,28 @@ class Try:
 
         final_criteria = criteria_tl & criteria_tm & criteria_tr & criteria_br & criteria_mm & criteria_bl
         answer = final_criteria.filtered(all_possible_layouts)
+
         if len(answer) == 1:
+            self.answer = answer[0]
+            for key in self.combinations:
+                self.mapping[key] = self.answer.get_number_by_pattern(key)
             print("PASS")
             return answer
         else:
             print(f"FAIL, still have {len(answer)} answers")
             raise RuntimeError("can not found answer")
+
+    def get_value(self, pattern):
+        return self.mapping[pattern]
+
+    def get_total(self):
+        total = 0
+        for o in self.outputs:
+            total *= 10
+            value = self.get_value(o)
+            total += value
+        print(f"{total=}")
+        return total
 
 
 def main(data):
@@ -80,15 +97,15 @@ def main(data):
         inputs, outputs = line.split("|")
         tries.append(Try(inputs, outputs))
 
+    count = 0
     for t in tries:
         # print(f"{t.inputs=}, {t.outputs=} {t.combinations=}")
-        answer = t.get_result().pop()
-        print(answer)
-
-    # for t in tries:
-    #     pass
-
-    return 61229
+        t.get_result()
+        total = t.get_total()
+        count += total
+    print(count)
+    return count
 
 
 assert 61229 == main(Path("sample.txt").read_text())
+assert 1091165 == main(Path("data.txt").read_text())
